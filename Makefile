@@ -20,7 +20,7 @@ CCOPT := ocamlopt
 CCFLAGS =
 
 ##### SRCS #####
-SRCS := $(addprefix $(SRCPATH)/,parsing.mli parsing.ml main.ml)
+SRCS := $(addprefix $(SRCPATH)/,parsing.mli parsing.ml print.ml main.ml)
 
 ML_SRCS := $(filter %.ml, $(SRCS))
 MLI_SRCS := $(filter %.mli, $(SRCS))
@@ -34,18 +34,18 @@ MLI_OBJ := $(MLI_SRCS:$(SRCPATH)/%.mli=$(INTERFACE_OBJPATH)/%.cmi)
 all : mk_objdir $(NAME)
 
 $(NAME) : display_interface $(MLI_OBJ) display_sources $(ML_OBJ)
-	$(call print_title,$@,$(RED))
+	$(call print_title,$@,$(YELLOW))
 	ocamlfind $(CC) -o $@ -linkpkg $(PACKAGES) $(ML_OBJ)
 
 opt : mk_objdir display_interface $(MLI_OBJ) display_sources $(ML_OBJ_OPT)
-	$(call print_title,$(NAME),$(RED))
+	$(call print_title,$(NAME),$(YELLOW))
 	ocamlfind $(CCOPT) -o $(NAME) -linkpkg $(PACKAGES) $(ML_OBJ_OPT)
 
 mk_objdir:
 	@if [ ! -d $(OBJPATH) ]; then mkdir $(OBJPATH); fi
 
 $(OBJPATH)/%.cmi : $(SRCPATH)/%.mli
-	@echo "$(GREEN) ๏$(NC)$< → $@"
+	@echo "$(BLUE) ๏$(NC)$< → $@"
 	@ocamlfind $(CC) $(CCFLAGS) -c $(PACKAGES) $< -o $@
 
 $(OBJPATH)/%.cmo : $(SRCPATH)/%.ml

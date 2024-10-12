@@ -27,6 +27,7 @@ let to_state = to_tm_type Yojson.Basic.Util.to_string str_to_state
 let to_direction = to_tm_type Yojson.Basic.Util.to_string str_to_direction_exn
 let str_of_state = function State s -> s
 let str_of_symb = function Blank -> "Blank" | Symbol c -> String.make 1 c
+let str_of_direction = function Left -> "Left" | Right -> "Right"
 let difference l1 l2 = List.filter (fun elem -> not @@ List.mem elem l2) l1
 
 let mem_exn name json =
@@ -109,3 +110,7 @@ let get_tape input str_to_symbol =
     match tape with
     | [] -> raise (Parsing_error "input must not be empty")
     | hd :: t -> { left = []; head = hd; right = t @ [ Blank ] }
+
+(* List.iter *)
+(*   (fun a -> Format.printf "Parsed to %a" Yojson.Basic.pp a; print_endline "\n----\n") *)
+(*   transitions'; *)

@@ -16,6 +16,7 @@ exception Parsing_error of string
 
 val str_of_state : state -> string
 val str_of_symb : symbol -> string
+val str_of_direction : direction -> string
 
 val get_symbols :
   string -> string list -> (string -> symbol) * symbol * symbol list
