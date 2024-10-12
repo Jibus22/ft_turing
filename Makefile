@@ -25,7 +25,7 @@ ML_SRCS := $(filter %.ml, $(SRCS))
 MLI_SRCS := $(filter %.mli, $(SRCS))
 
 ML_OBJ := $(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmo)
-MLI_OBJ := $(MLI_SRCS:$(SRCPATH)/%.mli=$(OBJPATH)/%.cmi)
+MLI_OBJ := $(MLI_SRCS:$(SRCPATH)/%.mli=$(INTERFACE_OBJPATH)/%.cmi)
 
 ### RULES ###
 
@@ -34,26 +34,47 @@ all : mk_objdir $(NAME)
 mk_objdir:
 	@if [ ! -d $(OBJPATH) ]; then mkdir $(OBJPATH); fi
 
-$(NAME) : $(MLI_OBJ) $(ML_OBJ)
-	@echo "\n$(END)$(BLUE)# Making $(NAME) #$(END)$(GREY)"
+$(NAME) : display_interface $(MLI_OBJ) display_sources $(ML_OBJ)
+	$(call print_title,$@,$(RED))
 	ocamlfind $(CC) -o $@ -linkpkg $(PACKAGES) $(ML_OBJ)
-	@echo "\n$(END)$(GREEN)# $(NAME) is built #$(END)"
 
 $(OBJPATH)/%.cmi : $(SRCPATH)/%.mli
-	ocamlfind $(CC) $(CCFLAGS) -c $(PACKAGES) $< -o $@
+	@echo "$(GREEN) ๏$(NC)$< → $@"
+	@ocamlfind $(CC) $(CCFLAGS) -c $(PACKAGES) $< -o $@
+
 $(OBJPATH)/%.cmo : $(SRCPATH)/%.ml
-	ocamlfind $(CC) $(CCFLAGS) -c $(PACKAGES) $(INC) $< -o $@
+	@echo "$(GREEN) ๏$(NC)$< → $@"
+	@ocamlfind $(CC) $(CCFLAGS) -c $(PACKAGES) $(INC) $< -o $@
 
 ### CLEAN ###
-.PHONY : sanitize clean fclean re
+.PHONY : sanitize clean fclean re display_sources display_interface
 
 clean :
-	@echo "$(END)$(RED)# removing $(NAME) objects #$(END)$(GREY)"
-	rm -rf $(ML_OBJ) $(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmi)
+	@echo "$(RED) ✗$(NC)$(ML_OBJ) $(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmi)"
+	@rm -rf $(ML_OBJ) $(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmi)
 
 fclean : clean
-	@echo "$(END)$(RED)\n# removing $(NAME) #$(END)$(GREY)"
-	rm -f $(NAME)
+	@echo "$(RED) ✗$(NC)$(NAME)"
+	@rm -f $(NAME)
 
 re : fclean all
 
+### MISC ###
+
+display_interface:
+	$(call print_title,interfaces,$(BLUE))
+display_sources:
+	$(call print_title,sources,$(GREEN))
+
+LINE_LENGTH := 50
+
+print_title = \
+							@title_len=$$(echo -n "$(1)" | wc -c); \
+							padding_len=$$((($(LINE_LENGTH) - title_len - 2) / 2)); \
+							printf "%*s $(2)%s$(NC) %*s\n" $$padding_len "" "$(1)" $$padding_len "" | tr ' ' '≡'
+
+GREEN := \033[0;32m
+RED := \033[0;31m
+YELLOW := \033[0;33m
+BLUE := \033[0;34m
+NC := \033[0m  # No Color (reset)
