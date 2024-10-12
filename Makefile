@@ -6,14 +6,12 @@ INTERFACESPATH := src
 OBJPATH := _build
 INTERFACE_OBJPATH := _build
 
-##### LIB #####
-LIBS =
+##### LIB / DEPENDENCIES #####
+PACKAGES = -package yojson,base
 
 ##### INCLUDE #####
 PATH_INCLUDE := $(INTERFACE_OBJPATH)
-# HEADERS = $(PATH_INCLUDE)/*.mli
-# INC = $(addprefix -I , $(PATH_INCLUDE))
-
+INC = $(addprefix -I , $(PATH_INCLUDE))
 
 ##### COMPILER #####
 CC := ocamlc
@@ -21,39 +19,37 @@ CC := ocamlc
 CCFLAGS =
 
 ##### SRCS #####
-# INTERFACESPATH := $(addprefix $(SRCPATH)/, parsing.mli)
 SRCS := $(addprefix $(SRCPATH)/,parsing.mli parsing.ml main.ml)
 
-# INTERFACE_OBJ := $(INTERFACESPATH:$(SRCPATH)/%.mli=$(INTERFACE_OBJPATH)/%.cmi)
-OBJ := $(SRCS:$(SRCPATH)/%.mli=$(OBJPATH)/%.cmi)
-OBJS = $(OBJ) $(SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmo)
+ML_SRCS := $(filter %.ml, $(SRCS))
+MLI_SRCS := $(filter %.mli, $(SRCS))
+
+ML_OBJ := $(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmo)
+MLI_OBJ := $(MLI_SRCS:$(SRCPATH)/%.mli=$(OBJPATH)/%.cmi)
 
 ### RULES ###
 
 all : mk_objdir $(NAME)
-	echo "objs" $(OBJS)
-	echo "obj" $(OBJ)
 
 mk_objdir:
 	@if [ ! -d $(OBJPATH) ]; then mkdir $(OBJPATH); fi
 
-$(NAME) : $(OBJS)
+$(NAME) : $(MLI_OBJ) $(ML_OBJ)
 	@echo "\n$(END)$(BLUE)# Making $(NAME) #$(END)$(GREY)"
-	ocamlfind $(CC) -o $@ -linkpkg -package yojson $(OBJ)
+	ocamlfind $(CC) -o $@ -linkpkg $(PACKAGES) $(ML_OBJ)
 	@echo "\n$(END)$(GREEN)# $(NAME) is built #$(END)"
 
-$(OBJPATH)/%.cmi : $(SRCPATH)/%.mli #$(HEADERS)
-	ocamlfind $(CC) $(CCFLAGS) -c -package yojson $< -o $@
-$(OBJPATH)/%.cmo : $(SRCPATH)/%.ml #$(HEADERS)
-	ocamlfind $(CC) $(CCFLAGS) -c -package yojson -I $(PATH_INCLUDE) $< -o $@
+$(OBJPATH)/%.cmi : $(SRCPATH)/%.mli
+	ocamlfind $(CC) $(CCFLAGS) -c $(PACKAGES) $< -o $@
+$(OBJPATH)/%.cmo : $(SRCPATH)/%.ml
+	ocamlfind $(CC) $(CCFLAGS) -c $(PACKAGES) $(INC) $< -o $@
 
 ### CLEAN ###
 .PHONY : sanitize clean fclean re
 
 clean :
 	@echo "$(END)$(RED)# removing $(NAME) objects #$(END)$(GREY)"
-	rm -rf $(OBJ)
-	rm -rf $(INTERFACE_OBJ)
+	rm -rf $(ML_OBJ) $(MLI_OBJ)
 
 fclean : clean
 	@echo "$(END)$(RED)\n# removing $(NAME) #$(END)$(GREY)"
