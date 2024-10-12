@@ -1,0 +1,6 @@
+*.pdf
+_opam
+.DS_Store
+*.cm[io]
+ft_turing
+test.json
