@@ -4,3 +4,4 @@ _opam
 *.cm[io]
 ft_turing
 test.json
+_build

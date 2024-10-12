@@ -7,7 +7,7 @@ OBJPATH := _build
 INTERFACE_OBJPATH := _build
 
 ##### LIB / DEPENDENCIES #####
-PACKAGES = -package yojson,base
+PACKAGES = -package yojson
 
 ##### INCLUDE #####
 PATH_INCLUDE := $(INTERFACE_OBJPATH)
@@ -49,7 +49,7 @@ $(OBJPATH)/%.cmo : $(SRCPATH)/%.ml
 
 clean :
 	@echo "$(END)$(RED)# removing $(NAME) objects #$(END)$(GREY)"
-	rm -rf $(ML_OBJ) $(MLI_OBJ)
+	rm -rf $(ML_OBJ) $(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmi)
 
 fclean : clean
 	@echo "$(END)$(RED)\n# removing $(NAME) #$(END)$(GREY)"
