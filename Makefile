@@ -15,6 +15,7 @@ INC = $(addprefix -I , $(PATH_INCLUDE))
 
 ##### COMPILER #####
 CC := ocamlc
+CCOPT := ocamlopt
 ##### COMPILATION FLAG #####
 CCFLAGS =
 
@@ -25,18 +26,23 @@ ML_SRCS := $(filter %.ml, $(SRCS))
 MLI_SRCS := $(filter %.mli, $(SRCS))
 
 ML_OBJ := $(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmo)
+ML_OBJ_OPT := $(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmx)
 MLI_OBJ := $(MLI_SRCS:$(SRCPATH)/%.mli=$(INTERFACE_OBJPATH)/%.cmi)
 
 ### RULES ###
 
 all : mk_objdir $(NAME)
 
-mk_objdir:
-	@if [ ! -d $(OBJPATH) ]; then mkdir $(OBJPATH); fi
-
 $(NAME) : display_interface $(MLI_OBJ) display_sources $(ML_OBJ)
 	$(call print_title,$@,$(RED))
 	ocamlfind $(CC) -o $@ -linkpkg $(PACKAGES) $(ML_OBJ)
+
+opt : mk_objdir display_interface $(MLI_OBJ) display_sources $(ML_OBJ_OPT)
+	$(call print_title,$(NAME),$(RED))
+	ocamlfind $(CCOPT) -o $(NAME) -linkpkg $(PACKAGES) $(ML_OBJ_OPT)
+
+mk_objdir:
+	@if [ ! -d $(OBJPATH) ]; then mkdir $(OBJPATH); fi
 
 $(OBJPATH)/%.cmi : $(SRCPATH)/%.mli
 	@echo "$(GREEN) ๏$(NC)$< → $@"
@@ -46,12 +52,22 @@ $(OBJPATH)/%.cmo : $(SRCPATH)/%.ml
 	@echo "$(GREEN) ๏$(NC)$< → $@"
 	@ocamlfind $(CC) $(CCFLAGS) -c $(PACKAGES) $(INC) $< -o $@
 
+$(OBJPATH)/%.cmx : $(SRCPATH)/%.ml
+	@echo "$(GREEN) ๏$(NC)$< → $@"
+	@ocamlfind $(CCOPT) $(CCFLAGS) -c $(PACKAGES) $(INC) $< -o $@
+
 ### CLEAN ###
 .PHONY : sanitize clean fclean re display_sources display_interface
 
+ALL_OBJECTS=\
+						$(ML_OBJ)\
+						$(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmi)\
+						$(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmx)\
+						$(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.o)
+
 clean :
-	@echo "$(RED) ✗$(NC)$(ML_OBJ) $(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmi)"
-	@rm -rf $(ML_OBJ) $(ML_SRCS:$(SRCPATH)/%.ml=$(OBJPATH)/%.cmi)
+	@echo "$(RED) ✗$(NC)$(ALL_OBJECTS)"
+	@rm -f $(ALL_OBJECTS)
 
 fclean : clean
 	@echo "$(RED) ✗$(NC)$(NAME)"
