@@ -14,6 +14,7 @@ type turing_machine = {
 
 exception Parsing_error of string
 
+let blank = ref ""
 let str_to_state s = State s
 
 let str_to_direction_exn s =
@@ -26,7 +27,7 @@ let to_tm_type to_f to_type jsontype = to_f jsontype |> to_type
 let to_state = to_tm_type Yojson.Basic.Util.to_string str_to_state
 let to_direction = to_tm_type Yojson.Basic.Util.to_string str_to_direction_exn
 let str_of_state = function State s -> s
-let str_of_symb = function Blank -> "Blank" | Symbol c -> String.make 1 c
+let str_of_symb = function Blank -> !blank | Symbol c -> String.make 1 c
 let str_of_direction = function Left -> "Left" | Right -> "Right"
 let difference l1 l2 = List.filter (fun elem -> not @@ List.mem elem l2) l1
 
@@ -80,10 +81,10 @@ let get_symbols blank alphabet =
 
 let parse_json json =
   let open Yojson.Basic.Util in
-  let name = json |> mem_exn "name" |> to_string
-  and blank = json |> mem_exn "blank" |> to_string
-  and alphabet = json |> mem_exn "alphabet" |> to_list |> List.map to_string in
-  let str_to_symbol, blank, alphabet = get_symbols blank alphabet
+  let name = json |> mem_exn "name" |> to_string in
+  blank := json |> mem_exn "blank" |> to_string;
+  let alphabet = json |> mem_exn "alphabet" |> to_list |> List.map to_string in
+  let str_to_symbol, blank, alphabet = get_symbols !blank alphabet
   and states = json |> mem_exn "states" |> to_list |> List.map to_state in
   let current_state = json |> mem_exn "initial" |> to_state_exn states
   and halt_states =
