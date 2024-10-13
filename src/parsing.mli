@@ -18,9 +18,6 @@ val str_of_state : state -> string
 val str_of_symb : symbol -> string
 val str_of_direction : direction -> string
 
-val get_symbols :
-  string -> string list -> (string -> symbol) * symbol * symbol list
-
 val parse_json :
   Yojson.Basic.t ->
   string
@@ -29,3 +26,5 @@ val parse_json :
   * (state list * state list * (state * symbol, transition) Hashtbl.t * state)
 
 val get_tape : String.t -> (string -> symbol) -> tape
+
+val parse_input : string -> string -> (string * symbol list * turing_machine)

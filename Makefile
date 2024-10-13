@@ -20,7 +20,7 @@ CCOPT := ocamlopt
 CCFLAGS =
 
 ##### SRCS #####
-SRCS := $(addprefix $(SRCPATH)/,parsing.mli parsing.ml print.ml main.ml)
+SRCS := $(addprefix $(SRCPATH)/,parsing.mli parsing.ml print.ml evaluate.ml main.ml)
 
 ML_SRCS := $(filter %.ml, $(SRCS))
 MLI_SRCS := $(filter %.mli, $(SRCS))

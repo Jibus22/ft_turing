@@ -1,3 +1,5 @@
+open Parsing
+
 type enclose = Parens | Hook
 
 let w = 80
@@ -25,7 +27,6 @@ let list_to_str title convert lst =
 let get_str title convert data = title ^ ": " ^ convert data
 
 let transition_tuple_to_str acc ((st, sym), tr) =
-  let open Parsing in
   let rhs { next_state; move; write } =
     show_str_lst
       [ str_of_state next_state; str_of_symb write; str_of_direction move ]
@@ -37,12 +38,13 @@ let transition_tbl_to_str table =
   |> List.sort (fun ((st1, _), _) ((st2, _), _) -> Stdlib.compare st1 st2)
   |> List.fold_left transition_tuple_to_str ""
 
-let display_input name alphabet tm =
-  let open Parsing in
-  let states, halt_states, transitions, current_state = tm in
+let display_input name alphabet
+    { states; halt_states; current_state; transitions; _ } =
+  (* let states, halt_states, transitions, current_state = tm in *)
   print_endline @@ get_header name;
   print_endline @@ list_to_str "Alphabet" str_of_symb alphabet;
   print_endline @@ list_to_str "States" str_of_state states;
   print_endline @@ list_to_str "Finals" str_of_state halt_states;
   print_endline @@ get_str "Initial" str_of_state current_state;
-  print_endline @@ transition_tbl_to_str transitions
+  print_endline @@ transition_tbl_to_str transitions;
+  print_endline @@ String.make w '*'

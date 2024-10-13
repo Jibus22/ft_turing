@@ -109,7 +109,18 @@ let get_tape input str_to_symbol =
   else
     match tape with
     | [] -> raise (Parsing_error "input must not be empty")
-    | hd :: t -> { left = []; head = hd; right = t @ [ Blank ] }
+    | hd :: t -> { left = []; head = hd; right = t }
+
+let parse_input json_filename user_input =
+  let json = Yojson.Basic.from_file json_filename in
+  let ( name,
+        alphabet,
+        str_to_symbol,
+        (states, halt_states, transitions, current_state) ) =
+    parse_json json
+  in
+  let tape = get_tape user_input str_to_symbol in
+  (name, alphabet, { tape; states; halt_states; current_state; transitions })
 
 (* List.iter *)
 (*   (fun a -> Format.printf "Parsed to %a" Yojson.Basic.pp a; print_endline "\n----\n") *)

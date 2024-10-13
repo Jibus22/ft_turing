@@ -17,10 +17,9 @@ let () =
       exit 1
   | Some (json_filename, user_input) -> (
       try
-        let json = Yojson.Basic.from_file json_filename in
-        let name, alphabet, str_to_symbol, tm = Parsing.parse_json json in
-        let _ = Parsing.get_tape user_input str_to_symbol in
+        let name, alphabet, tm = Parsing.parse_input json_filename user_input in
         Print.display_input name alphabet tm;
+        let _ = Evaluate.evaluate tm in
         exit 0
       with
       | Parsing.Parsing_error msg -> Printf.eprintf "Parsing error: %s\n" msg
