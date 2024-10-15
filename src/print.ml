@@ -35,17 +35,20 @@ let list_to_str title convert lst =
 
 let get_str title convert data = title ^ ": " ^ convert data
 
-let transition_tuple_to_str acc ((st, sym), tr) =
+let transition_tuple_to_str ((st, sym), tr) =
   let rhs { next_state; move; write } =
     show_str_lst
       [ str_of_state next_state; str_of_symb write; str_of_direction move ]
   and lhs = show_str_lst [ str_of_state st; str_of_symb sym ] in
-  acc ^ lhs ^ " -> " ^ rhs tr ^ "\n"
+  lhs ^ " -> " ^ rhs tr
+
+let transition_string_list_of_table acc tr =
+  acc ^ transition_tuple_to_str tr ^ "\n"
 
 let transition_tbl_to_str table =
   Hashtbl.to_seq table |> List.of_seq
   |> List.sort (fun ((st1, _), _) ((st2, _), _) -> Stdlib.compare st1 st2)
-  |> List.fold_left transition_tuple_to_str ""
+  |> List.fold_left transition_string_list_of_table ""
 
 let tape_to_str { left; head; right } =
   let left = List.map str_of_symb left |> List.rev

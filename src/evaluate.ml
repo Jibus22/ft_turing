@@ -10,10 +10,6 @@ let move_head tape direction =
   | Right, l, [] -> { tape with head = Blank; left = tape.head :: l }
   | Right, l, hd :: tl -> { head = hd; right = tl; left = tape.head :: l }
 
-let log_current_tm_state tape (current, action) =
-  print_string @@ tape_to_str tape ^ " "
-  ^ transition_tuple_to_str "" (current, action)
-
 let check_infinite tape (st, sym) { next_state; move; write } =
   let stay_same_state = is_blank sym && st = next_state && sym = write in
   match (move, tape.left, tape.right) with
@@ -21,14 +17,14 @@ let check_infinite tape (st, sym) { next_state; move; write } =
       raise (Infinite "Infinite dead end")
   | _ -> ()
 
-let evaluate tm =
+let evaluate log tm =
   let rec loop current_st tape =
-    if List.mem current_st tm.halt_states then "stop"
+    if List.mem current_st tm.halt_states then ()
     else
       try
         let current_pair = (current_st, tape.head) in
         let action = Hashtbl.find tm.transitions current_pair in
-        log_current_tm_state tape (current_pair, action);
+        log tape (current_pair, action);
         check_infinite tape current_pair action;
         let tape = { tape with head = action.write } in
         let tape = move_head tape action.move in
