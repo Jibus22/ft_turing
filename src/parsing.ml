@@ -28,6 +28,7 @@ let to_state = to_tm_type Yojson.Basic.Util.to_string str_to_state
 let to_direction = to_tm_type Yojson.Basic.Util.to_string str_to_direction_exn
 let str_of_state = function State s -> s
 let str_of_symb = function Blank -> !blank | Symbol c -> String.make 1 c
+let is_blank = function Blank -> true | Symbol _ -> false
 let str_of_direction = function Left -> "Left" | Right -> "Right"
 let difference l1 l2 = List.filter (fun elem -> not @@ List.mem elem l2) l1
 

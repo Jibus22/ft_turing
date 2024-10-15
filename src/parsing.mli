@@ -17,6 +17,7 @@ exception Parsing_error of string
 val str_of_state : state -> string
 val str_of_symb : symbol -> string
 val str_of_direction : direction -> string
+val is_blank : symbol -> bool
 
 val parse_json :
   Yojson.Basic.t ->

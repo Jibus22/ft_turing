@@ -54,13 +54,11 @@ let tape_to_str { left; head; right } =
   show_str_lst ~sep:"" ~enclose:Hook @@ left @ head @ right
 
 let display_input name alphabet
-    { states; halt_states; current_state; transitions; tape } =
-  (* let states, halt_states, transitions, current_state = tm in *)
+    { states; halt_states; current_state; transitions; _ } =
   print_endline @@ get_header name;
   print_endline @@ list_to_str "Alphabet" str_of_symb alphabet;
   print_endline @@ list_to_str "States" str_of_state states;
   print_endline @@ list_to_str "Finals" str_of_state halt_states;
   print_endline @@ get_str "Initial" str_of_state current_state;
   print_endline @@ transition_tbl_to_str transitions;
-  print_endline @@ tape_to_str tape;
   print_endline @@ String.make w '*'
