@@ -1,0 +1,83 @@
+{
+  "name": "0n1n",
+  "alphabet": ["1", "0", "y", "n", "."],
+  "blank": ".",
+  "states": [
+    "choose-state",
+    "scanright1",
+    "scanright0",
+    "check1",
+    "check0",
+    "scanleft",
+    "HALT"
+  ],
+  "initial": "choose-state",
+  "finals": ["HALT"],
+  "transitions": {
+    "choose-state": [
+      {
+        "read": "1",
+        "to_state": "scanright1",
+        "write": ".",
+        "action": "RIGHT"
+      },
+      {
+        "read": "0",
+        "to_state": "scanright0",
+        "write": ".",
+        "action": "RIGHT"
+      },
+      { "read": ".", "to_state": "HALT", "write": "y", "action": "RIGHT" }
+    ],
+    "scanright0": [
+      {
+        "read": "1",
+        "to_state": "scanright0",
+        "write": "1",
+        "action": "RIGHT"
+      },
+      {
+        "read": "0",
+        "to_state": "scanright0",
+        "write": "0",
+        "action": "RIGHT"
+      },
+      { "read": ".", "to_state": "check0", "write": ".", "action": "LEFT" }
+    ],
+    "scanright1": [
+      {
+        "read": "1",
+        "to_state": "scanright1",
+        "write": "1",
+        "action": "RIGHT"
+      },
+      {
+        "read": "0",
+        "to_state": "scanright1",
+        "write": "0",
+        "action": "RIGHT"
+      },
+      { "read": ".", "to_state": "check1", "write": ".", "action": "LEFT" }
+    ],
+    "check0": [
+      { "read": "0", "to_state": "HALT", "write": "n", "action": "RIGHT" },
+      { "read": "1", "to_state": "scanleft", "write": ".", "action": "LEFT" },
+      { "read": ".", "to_state": "HALT", "write": "n", "action": "RIGHT" }
+    ],
+    "check1": [
+      { "read": "1", "to_state": "HALT", "write": "n", "action": "RIGHT" },
+      { "read": "0", "to_state": "scanleft", "write": ".", "action": "LEFT" },
+      { "read": ".", "to_state": "HALT", "write": "n", "action": "RIGHT" }
+    ],
+    "scanleft": [
+      { "read": "1", "to_state": "scanleft", "write": "1", "action": "LEFT" },
+      { "read": "0", "to_state": "scanleft", "write": "0", "action": "LEFT" },
+      {
+        "read": ".",
+        "to_state": "choose-state",
+        "write": ".",
+        "action": "RIGHT"
+      }
+    ]
+  }
+}
