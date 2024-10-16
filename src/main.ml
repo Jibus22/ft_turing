@@ -26,7 +26,8 @@ let () =
       try
         let name, alphabet, tm = parse_input json_filename user_input in
         if !verbose then display_input name alphabet tm;
-        Evaluate.evaluate (logger !verbose) tm
+        let final_tape = Evaluate.evaluate (logger !verbose) tm in
+        print_endline @@ tape_to_str final_tape
       with
       | Parsing_error msg -> Printf.eprintf "Parsing error: %s\n" msg
       | e ->

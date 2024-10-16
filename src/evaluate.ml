@@ -1,5 +1,4 @@
 open Parsing
-open Print
 
 exception Infinite of string
 
@@ -19,7 +18,7 @@ let check_infinite tape (st, sym) { next_state; move; write } =
 
 let evaluate log tm =
   let rec loop current_st tape =
-    if List.mem current_st tm.halt_states then ()
+    if List.mem current_st tm.halt_states then tape
     else
       try
         let current_pair = (current_st, tape.head) in
