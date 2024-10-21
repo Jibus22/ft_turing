@@ -8,7 +8,6 @@ homepage: "https://github.com/Jibus22/ft_turing"
 bug-reports: "https://github.com/Jibus22/ft_turing/issues"
 depends: [
 	"ocaml" {>= "5.2.0"}
-	#"base"
 	"yojson"
 	"alcotest" {with-test}
 	"odoc" {with-dev}
