@@ -9,6 +9,7 @@ bug-reports: "https://github.com/Jibus22/ft_turing/issues"
 depends: [
 	"ocaml" {>= "5.2.0"}
 	"yojson"
+	"ocamlfind"
 	"alcotest" {with-test}
 	"odoc" {with-dev}
 ]

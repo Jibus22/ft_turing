@@ -123,7 +123,3 @@ let parse_input json_filename user_input =
   in
   let tape = get_tape user_input str_to_symbol in
   (name, alphabet, { tape; states; halt_states; current_state; transitions })
-
-(* List.iter *)
-(*   (fun a -> Format.printf "Parsed to %a" Yojson.Basic.pp a; print_endline "\n----\n") *)
-(*   transitions'; *)
