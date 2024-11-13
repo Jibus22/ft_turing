@@ -37,13 +37,13 @@ TEST_OBJI := $(TESTSRCS:$(TESTPATH)/%.ml=$(TESTPATH)/%.cmi)
 
 ### RULES ###
 
-all : mk_objdir $(NAME)
+all : init_system mk_objdir $(NAME)
 
 $(NAME) : display_interface $(MLI_OBJ) display_sources $(ML_OBJ)
 	$(call print_title,$@,$(YELLOW))
 	ocamlfind $(CC) -o $@ -linkpkg $(PACKAGES) $(ML_OBJ)
 
-opt : mk_objdir display_interface $(MLI_OBJ) display_sources $(ML_OBJ_OPT)
+opt : init_system mk_objdir display_interface $(MLI_OBJ) display_sources $(ML_OBJ_OPT)
 	$(call print_title,$(NAME),$(YELLOW))
 	ocamlfind $(CCOPT) -o $(NAME) -linkpkg $(PACKAGES) $(ML_OBJ_OPT)
 
@@ -53,6 +53,9 @@ test: mk_objdir display_interface $(MLI_OBJ) display_sources $(ML_OBJ) $(TEST_OB
 
 mk_objdir:
 	@if [ ! -d $(OBJPATH) ]; then mkdir $(OBJPATH); fi
+
+init_system:
+	@bash build.sh
 
 $(OBJPATH)/%.cmi : $(SRCPATH)/%.mli
 	@echo "$(BLUE) ๏$(NC)$< → $@"
@@ -105,7 +108,7 @@ LINE_LENGTH := 50
 print_title = \
 							@title_len=$$(echo -n "$(1)" | wc -c); \
 							padding_len=$$((($(LINE_LENGTH) - title_len - 2) / 2)); \
-							printf "%*s $(2)%s$(NC) %*s\n" $$padding_len "" "$(1)" $$padding_len "" | tr ' ' '≡'
+							printf "%*s $(2)%s$(NC) %*s\n" $$padding_len "" "$(1)" $$padding_len "" | tr ' ' '-'
 
 GREEN := \033[0;32m
 RED := \033[0;31m
