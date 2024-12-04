@@ -121,4 +121,4 @@ https://github.com/Jibus22/ft_turing/blob/c3fc24ba53559ef08bcf84bee81f6b56cd3bf2
 
 ---
 
-<img width="354" alt="turing_unary_sub" src="https://github.com/user-attachments/assets/899d6054-693c-42fa-994b-1311693f0277">
+<img width="354" alt="turing_unary_sub" src="https://github.com/user-attachments/assets/38376557-a721-49e6-a44d-13cecd7aa395">
